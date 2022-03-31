@@ -1,10 +1,10 @@
 from datetime import date
 from unittest import mock
 
-from find_my_bike.scrape.ebay import EbayImageScraper
+from scrape_my_bike.ebay import EbayImageScraper
 
 
-@mock.patch("find_my_bike.scrape.ebay.webdriver")
+@mock.patch("scrape_my_bike.ebay.webdriver")
 def test_driver_init(mock_webdriver):
     scraper = EbayImageScraper()
     mock_webdriver.Chrome.assert_called_once_with(
@@ -13,7 +13,7 @@ def test_driver_init(mock_webdriver):
     assert scraper.driver is mock_webdriver.Chrome()
 
 
-@mock.patch("find_my_bike.scrape.ebay.webdriver")
+@mock.patch("scrape_my_bike.ebay.webdriver")
 def test_context_manager(mock_webdriver):
     scraper = EbayImageScraper()
     with scraper as context_scraper:

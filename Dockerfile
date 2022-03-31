@@ -1,4 +1,4 @@
-FROM lambci/lambda:python3.8
+FROM public.ecr.aws/lambda/python:3.9
 
 RUN yum update -y
 RUN yum install -y \

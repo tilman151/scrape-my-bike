@@ -21,12 +21,12 @@ class EbayImageScraper:
     headless: bool
     driver: webdriver.Chrome
 
-    def __init__(self, high_res: bool = False, headless: bool = True) -> None:
+    def __init__(self, high_res: bool = False, headless: bool = True, options: Optional[webdriver.ChromeOptions] = None) -> None:
         self.high_res = high_res
         self.headless = headless
 
-        options = webdriver.ChromeOptions()
-        options.headless = self.headless
+        options = options or webdriver.ChromeOptions()
+        # options.headless = self.headless
         self.driver = webdriver.Chrome(options=options)
 
     def __enter__(self) -> "EbayImageScraper":

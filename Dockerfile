@@ -1,8 +1,13 @@
 FROM public.ecr.aws/lambda/python:3.9
 
-COPY dist/scrape_my_bike-0.1.0-py3-none-any.whl ./
+RUN pip install poetry
+RUN poetry config virtualenvs.create false
 
-RUN python3.9 -m pip install scrape_my_bike-0.1.0-py3-none-any.whl
+COPY pyproject.toml poetry.lock ./
+
+RUN poetry install --no-dev
+
+COPY scrape_my_bike ./scrape_my_bike
 
 # Command can be overwritten by providing a different command in the template directly.
 CMD ["scrape_my_bike.app.lambda_handler"]

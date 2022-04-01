@@ -32,10 +32,5 @@ ENV FONTCONFIG_PATH="/var/task/fonts"
 
 COPY scrape_my_bike ./scrape_my_bike
 
-ENV MODEL_URL = ${MODEL_URL}
-ENV MODEL_API_KEY = ${MODEL_API_KEY}
-ENV BACKEND_URL = ${BACKEND_URL}
-ENV BACKEND_ADMIN_KEY = ${BACKEND_ADMIN_KEY}
-
 # Command can be overwritten by providing a different command in the template directly.
 CMD ["scrape_my_bike.app.lambda_handler"]

@@ -21,6 +21,13 @@ Resources:
             Schedule: rate(1 hour)
       MemorySize: 1024
       Timeout: 900000
+      Environment:
+        Variables:
+          MODEL_URL:
+          MODEL_API_KEY:
+          BACKEND_URL:
+          BACKEND_ADMIN_KEY:
+          CHROME_BINARY_LOC: /var/task/headless-chromium
     Metadata:
       Dockerfile: Dockerfile
       DockerContext: ./

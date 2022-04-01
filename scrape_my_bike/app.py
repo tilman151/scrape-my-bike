@@ -10,7 +10,11 @@ from selenium import webdriver
 from scrape_my_bike import EbayImageScraper
 
 
-CHROME_BINARY_LOC = os.environ["CHROME_BINARY_LOC"]
+CHROME_BINARY_LOC = (
+    os.environ["CHROME_BINARY_LOC"]
+    if "CHROME_BINARY_LOC" in os.environ
+    else "/var/task/headless-chromium"
+)
 MODEL_URL = os.environ["MODEL_URL"]
 MODEL_API_KEY = os.environ["MODEL_API_KEY"]
 BACKEND_URL = os.environ["BACKEND_URL"]
@@ -52,10 +56,7 @@ def lambda_handler(event, context):
             if not status_code == 200:
                 logging.error(f"Backend returned {status_code}, not 201")
 
-    return {
-        "statusCode": 200,
-        "body": json.dumps(image_urls, default=str),
-    }
+    return {"statusCode": 200}
 
 
 def _get_predictions(batch):

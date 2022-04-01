@@ -17,7 +17,6 @@ RUN unzip chromedriver_linux64.zip
 RUN curl -SL https://github.com/adieuadieu/serverless-chrome/releases/download/v1.0.0-55/stable-headless-chromium-amazonlinux-2017-03.zip > headless-chromium.zip
 RUN unzip headless-chromium.zip
 RUN rm *.zip
-ENV CHROME_BINARY_LOC = "/var/task/headless-chromium"
 
 ENV PATH="./:${PATH}"
 
@@ -32,6 +31,11 @@ COPY fonts ./fonts
 ENV FONTCONFIG_PATH="/var/task/fonts"
 
 COPY scrape_my_bike ./scrape_my_bike
+
+ENV MODEL_URL = ${MODEL_URL}
+ENV MODEL_API_KEY = ${MODEL_API_KEY}
+ENV BACKEND_URL = ${BACKEND_URL}
+ENV BACKEND_ADMIN_KEY = ${BACKEND_ADMIN_KEY}
 
 # Command can be overwritten by providing a different command in the template directly.
 CMD ["scrape_my_bike.app.lambda_handler"]

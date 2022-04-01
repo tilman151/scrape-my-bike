@@ -8,6 +8,7 @@ authors = ["Tilman Krokotsch <t.krokotsch@gmail.com>"]
 python = "^3.9"
 selenium = "^3.141.0"
 certifi = "^2021.10.8"
+requests = "^2.27.1"
 
 [tool.poetry.dev-dependencies]
 black = {extras = ["d"], version = "^22.3.0"}

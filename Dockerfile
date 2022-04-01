@@ -17,6 +17,7 @@ RUN unzip chromedriver_linux64.zip
 RUN curl -SL https://github.com/adieuadieu/serverless-chrome/releases/download/v1.0.0-55/stable-headless-chromium-amazonlinux-2017-03.zip > headless-chromium.zip
 RUN unzip headless-chromium.zip
 RUN rm *.zip
+ENV CHROME_BINARY_LOC = "/var/task/headless-chromium"
 
 ENV PATH="./:${PATH}"
 

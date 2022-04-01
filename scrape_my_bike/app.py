@@ -27,12 +27,21 @@ formatter = logging.Formatter("[%(asctime)s][%(name)s][%(levelname)s] - %(messag
 handler.setFormatter(formatter)
 root.addHandler(handler)
 
+os.makedirs("/tmp/data-path", exist_ok=True)
+os.makedirs("/tmp/user-data-dir", exist_ok=True)
+os.makedirs("/tmp/homedir", exist_ok=True)
+os.makedirs("/tmp/disk-cache-dir", exist_ok=True)
+
 options = webdriver.ChromeOptions()
 options.headless = True
 options.binary_location = CHROME_BINARY_LOC
 options.add_argument("--no-sandbox")
 options.add_argument("--disable-gpu")
 options.add_argument("--single-process")
+options.add_argument("--data-path=/tmp/data-path")
+options.add_argument("--user-data-dir=/tmp/user-data-dir")
+options.add_argument("--homedir=/tmp/homedir")
+options.add_argument("--disk-cache-dir=/tmp/disk-cache-dir")
 
 
 def lambda_handler(event, context):

@@ -92,7 +92,7 @@ def _send_to_backend(batch):
             "access_token": BACKEND_ADMIN_KEY,
             "Content-Type": "application/json",
         }
-        payload = json.dumps(batch, default=str)
+        payload = json.dumps(batch, default=lambda d: str(d.date()))
         response = requests.post(BACKEND_URL, headers=headers, data=payload)
         status_code = response.status_code
     else:

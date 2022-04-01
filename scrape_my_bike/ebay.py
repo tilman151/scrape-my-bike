@@ -21,12 +21,17 @@ class EbayImageScraper:
     headless: bool
     driver: webdriver.Chrome
 
-    def __init__(self, high_res: bool = False, headless: bool = True, options: Optional[webdriver.ChromeOptions] = None) -> None:
+    def __init__(
+        self,
+        high_res: bool = False,
+        headless: bool = True,
+        options: Optional[webdriver.ChromeOptions] = None,
+    ) -> None:
         self.high_res = high_res
         self.headless = headless
 
         options = options or webdriver.ChromeOptions()
-        # options.headless = self.headless
+        options.headless = self.headless
         self.driver = webdriver.Chrome(options=options)
 
     def __enter__(self) -> "EbayImageScraper":
@@ -86,7 +91,7 @@ class EbayImageScraper:
         location: Optional[str] = None,
         category: Optional[str] = None,
     ) -> None:
-        logger.info(f"Search '{query}' in '{location}'")
+        logger.info(f"Search '{query}' in '{category}' in '{location}'")
         if category is not None:
             if category in (categories := self._get_categories()):
                 categories[category].click()

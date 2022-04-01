@@ -10,23 +10,49 @@ from responses import matchers
 @pytest.fixture
 def env_vars(monkeypatch):
     monkeypatch.setenv("CHROME_BINARY_LOC", "")
+
     model_url = "https://foo.bar/predict"
     monkeypatch.setenv("MODEL_URL", model_url)
     model_api_key = "1234567890"
     monkeypatch.setenv("MODEL_API_KEY", model_api_key)
 
-    return model_url, model_api_key
+    backend_url = "https://foo.bar/postings"
+    monkeypatch.setenv("BACKEND_URL", backend_url)
+    backend_admin_key = "0987654321"
+    monkeypatch.setenv("BACKEND_ADMIN_KEY", backend_admin_key)
+
+    return model_url, model_api_key, backend_url, backend_admin_key
 
 
 @pytest.fixture
 def fake_preds(env_vars):
-    model_url, model_api_key = env_vars
+    model_url, model_api_key, backend_url, backend_admin_key = env_vars
     fake_preds = {"bike": "", "frame": "", "single_color": ""}
+    expected_fake_preds = {"bike": "", "frame": "", "color": ""}
     responses.add(
         responses.POST,
         model_url,
+        status=200,
         body=json.dumps([fake_preds, fake_preds]),
-        match=[matchers.header_matcher({"x-api-key": model_api_key})],
+        match=[
+            matchers.header_matcher(
+                {"x-api-key": model_api_key, "Content-Type": "application/json"}
+            ),
+            matchers.json_params_matcher(["https://bar"] * 2),
+        ],
+    )
+    responses.add(
+        responses.POST,
+        backend_url,
+        status=201,
+        match=[
+            matchers.header_matcher(
+                {"access_token": backend_admin_key, "Content-Type": "application/json"}
+            ),
+            matchers.json_params_matcher(
+                [{"image_url": "https://bar", "prediction": expected_fake_preds}] * 2
+            ),
+        ],
     )
 
     return fake_preds
@@ -36,21 +62,11 @@ def fake_preds(env_vars):
 def test_lambda_handler(fake_preds):
     from scrape_my_bike import app  # Import after setting env vars
 
-    with mock.patch.object(
-        app.EbayImageScraper,
-        "get_items",
-        return_value=[
-            {"image_url": "https://bar"},
-            {"image_url": "https://bar"},
-            {"image_url": "https://bar"},
-            {"image_url": "https://bar"},
-        ],
-    ):
-        response = app.lambda_handler(None, None)
-
-    assert "body" in response
-    assert isinstance(response["body"], str)
-    expected_fake_preds = {k.replace("single_", ""): v for k, v in fake_preds.items()}
-    for item in json.loads(response["body"]):
-        assert "prediction" in item
-        assert item["prediction"] == expected_fake_preds
+    image_urls = [
+        {"image_url": "https://bar"},
+        {"image_url": "https://bar"},
+        {"image_url": "https://bar"},
+        {"image_url": "https://bar"},
+    ]
+    with mock.patch.object(app.EbayImageScraper, "get_items", return_value=image_urls):
+        app.lambda_handler(None, None)

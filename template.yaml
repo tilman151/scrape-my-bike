@@ -27,7 +27,7 @@ Resources:
           MODEL_API_KEY: dummy
           BACKEND_URL: dummy
           BACKEND_ADMIN_KEY: dummy
-          CHROME_BINARY_LOC: /var/task/headless-chromium
+          CHROME_BINARY_LOC: /opt/chrome/chrome
     Metadata:
       Dockerfile: Dockerfile
       DockerContext: ./

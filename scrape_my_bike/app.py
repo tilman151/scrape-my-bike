@@ -3,6 +3,7 @@ import logging
 import os
 import sys
 from datetime import timedelta, datetime, tzinfo, timezone
+from tempfile import mkdtemp
 
 import pytz as pytz
 import requests
@@ -20,21 +21,21 @@ BACKEND_ADMIN_KEY = os.environ["BACKEND_ADMIN_KEY"]
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
-os.makedirs("/tmp/data-path", exist_ok=True)
-os.makedirs("/tmp/user-data-dir", exist_ok=True)
-os.makedirs("/tmp/homedir", exist_ok=True)
-os.makedirs("/tmp/disk-cache-dir", exist_ok=True)
-
 options = webdriver.ChromeOptions()
 options.headless = True
 options.binary_location = CHROME_BINARY_LOC
+options.add_argument("--headless")
 options.add_argument("--no-sandbox")
 options.add_argument("--disable-gpu")
+options.add_argument("--window-size=1280x1696")
 options.add_argument("--single-process")
-options.add_argument("--data-path=/tmp/data-path")
-options.add_argument("--user-data-dir=/tmp/user-data-dir")
-options.add_argument("--homedir=/tmp/homedir")
-options.add_argument("--disk-cache-dir=/tmp/disk-cache-dir")
+options.add_argument("--disable-dev-shm-usage")
+options.add_argument("--disable-dev-tools")
+options.add_argument("--no-zygote")
+options.add_argument(f"--user-data-dir={mkdtemp()}")
+options.add_argument(f"--data-path={mkdtemp()}")
+options.add_argument(f"--disk-cache-dir={mkdtemp()}")
+options.add_argument("--remote-debugging-port=9222")
 
 
 def lambda_handler(event, context):

@@ -37,9 +37,7 @@ def fake_preds(env_vars):
         status=200,
         body=json.dumps([fake_preds, fake_preds]),
         match=[
-            matchers.header_matcher(
-                {"x-api-key": model_api_key, "Content-Type": "application/json"}
-            ),
+            matchers.header_matcher({"x-api-key": model_api_key}),
             matchers.json_params_matcher(["https://bar"] * 2),
         ],
     )
@@ -52,14 +50,16 @@ def fake_preds(env_vars):
                 {"access_token": backend_admin_key, "Content-Type": "application/json"}
             ),
             matchers.json_params_matcher(
-                [
-                    {
-                        "image_url": "https://bar",
-                        "date": today,
-                        "prediction": expected_fake_preds,
-                    }
-                ]
-                * 2
+                {
+                    "data": [
+                        {
+                            "image_url": "https://bar",
+                            "date": today,
+                            "prediction": expected_fake_preds,
+                        }
+                    ]
+                    * 2
+                }
             ),
         ],
     )

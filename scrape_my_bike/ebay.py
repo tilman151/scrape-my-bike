@@ -1,9 +1,11 @@
 import logging
+import re
 import warnings
 from datetime import datetime, timedelta, date
 from time import sleep
 from typing import Optional, Dict, List, Any
 
+import pytz
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
@@ -13,6 +15,8 @@ from selenium.webdriver.support.expected_conditions import (
 from selenium.webdriver.support.wait import WebDriverWait
 
 SITE_URL = "https://www.ebay-kleinanzeigen.de/"
+TODAY_PATTERN = re.compile(r"Heute, (?P<hour>\d\d):(?P<minute>\d\d)")
+YESTERDAY_PATTERN = re.compile(r"Gestern, (?P<hour>\d\d):(?P<minute>\d\d)")
 
 logger = logging.getLogger(__name__)
 
@@ -220,10 +224,19 @@ class EbayImageScraper:
 
     @staticmethod
     def _parse_date(date_repr: str) -> datetime:
-        if "Heute" in date_repr:
-            parsed = datetime.today().date()
-        elif "Gestern" in date_repr:
-            parsed = datetime.today().date() - timedelta(days=1)
+        if match := TODAY_PATTERN.match(date_repr):
+            hour = int(match.group("hour"))
+            minute = int(match.group("minute"))
+            parsed = datetime.now(pytz.timezone("Europe/Berlin")).replace(
+                hour=hour, minute=minute
+            )
+        elif match := YESTERDAY_PATTERN.match(date_repr):
+            hour = int(match.group("hour"))
+            minute = int(match.group("minute"))
+            parsed = datetime.now(pytz.timezone("Europe/Berlin")).replace(
+                hour=hour, minute=minute
+            )
+            parsed = parsed - timedelta(days=1)
         else:
             parsed = datetime.strptime(date_repr, "%d.%m.%Y")
 

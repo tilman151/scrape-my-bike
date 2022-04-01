@@ -18,9 +18,9 @@ Resources:
         CloudWatchEvent:
           Type: Schedule
           Properties:
-            Schedule: cron(0 23 * * ? *)
-      MemorySize: 128
-      Timeout: 100
+            Schedule: rate(1 hour)
+      MemorySize: 1024
+      Timeout: 900000
     Metadata:
       Dockerfile: Dockerfile
       DockerContext: ./

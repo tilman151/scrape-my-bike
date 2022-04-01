@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, datetime, timedelta
 from unittest import mock
 
 from scrape_my_bike.ebay import EbayImageScraper
@@ -29,6 +29,20 @@ def test_retrieving_items():
     assert "image_url" in items[0]
     assert "query" in items[0]
     assert "location" in items[0]
+
+
+def test_retrieving_items_until():
+    last_hour = datetime.now() - timedelta(hours=1)
+    with EbayImageScraper() as scraper:
+        items = scraper.get_items(
+            "Fahrrad", "Berlin", "Fahrräder & Zubehör", until=last_hour
+        )
+    assert "url" in items[0]
+    assert "image_url" in items[0]
+    assert "query" in items[0]
+    assert "location" in items[0]
+    assert "date" in items[0]
+    assert items[-1]["date"] > last_hour
 
 
 def test_high_res_image_urls():

@@ -2,8 +2,9 @@ import json
 import logging
 import os
 import sys
-from datetime import date, timedelta
+from datetime import timedelta, datetime, tzinfo, timezone
 
+import pytz as pytz
 import requests
 from selenium import webdriver
 
@@ -45,10 +46,10 @@ options.add_argument("--disk-cache-dir=/tmp/disk-cache-dir")
 
 
 def lambda_handler(event, context):
-    yesterday = date.today() - timedelta(days=1)
+    last_hour = datetime.now(pytz.timezone("Europe/Berlin")) - timedelta(hours=1)
     with EbayImageScraper(high_res=True, options=options) as scraper:
         image_urls = scraper.get_items(
-            "Fahrrad", "Berlin", "Fahrräder & Zubehör", until=yesterday
+            "Fahrrad", "Berlin", "Fahrräder & Zubehör", until=last_hour
         )
 
     batch_size = 2

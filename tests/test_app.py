@@ -4,6 +4,7 @@ from datetime import datetime
 from unittest import mock
 
 import pytest
+import pytz
 import responses
 from responses import matchers
 
@@ -71,7 +72,9 @@ def fake_preds(env_vars):
 def test_lambda_handler(fake_preds):
     from scrape_my_bike import app  # Import after setting env vars
 
-    today = datetime.now().replace(microsecond=0, second=0)
+    today = datetime.now(pytz.timezone("Europe/Berlin")).replace(
+        microsecond=0, second=0
+    )
     image_urls = [
         {"image_url": "https://bar", "date": today},
         {"image_url": "https://bar", "date": today},

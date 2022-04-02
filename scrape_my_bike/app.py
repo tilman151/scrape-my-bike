@@ -39,7 +39,7 @@ options.add_argument("--remote-debugging-port=9222")
 
 
 def lambda_handler(event, context):
-    last_hour = datetime.now(pytz.timezone("Europe/Berlin")) - timedelta(hours=1)
+    last_hour = datetime.now(pytz.timezone("Europe/Berlin")) - timedelta(minutes=20)
     with EbayImageScraper(high_res=True, options=options) as scraper:
         image_urls = scraper.get_items(
             "Fahrrad", "Berlin", "Fahrräder & Zubehör", until=last_hour
@@ -88,10 +88,17 @@ def _send_to_backend(batch):
             "access_token": BACKEND_ADMIN_KEY,
             "Content-Type": "application/json",
         }
-        payload = json.dumps({"data": batch}, default=str)
+        payload = json.dumps({"data": batch}, default=_serialize)
         response = requests.post(BACKEND_URL, headers=headers, data=payload)
         status_code = response.status_code
     else:
         status_code = 201
 
     return status_code
+
+
+def _serialize(x):
+    if isinstance(x, datetime):
+        return str(x.replace(tzinfo=None))
+    else:
+        return x

@@ -51,6 +51,7 @@ def lambda_handler(event, context):
         status_code, preds = _get_predictions(batch)
         if not status_code == 200:
             logging.error(f"Prediction endpoint returned {status_code}, not 200")
+            raise RuntimeError(f"Prediction unsuccessful with status {status_code}")
         else:
             for img_url, pred in zip(batch, preds):
                 cleaned_pred = {k.replace("single_", ""): v for k, v in pred.items()}
@@ -59,6 +60,7 @@ def lambda_handler(event, context):
             status_code = _send_to_backend(batch)
             if not status_code == 201:
                 logging.error(f"Backend returned {status_code}, not 201")
+                raise RuntimeError(f"Backend unsuccessful with status {status_code}")
 
     return {"statusCode": 200}
 

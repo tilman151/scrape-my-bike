@@ -1,6 +1,8 @@
 from datetime import date, datetime, timedelta
 from unittest import mock
 
+import pytz
+
 from scrape_my_bike.ebay import EbayImageScraper
 
 
@@ -32,7 +34,7 @@ def test_retrieving_items():
 
 
 def test_retrieving_items_until():
-    last_hour = datetime.now() - timedelta(hours=1)
+    last_hour = datetime.now(pytz.timezone("Europe/Berlin")) - timedelta(hours=1)
     with EbayImageScraper() as scraper:
         items = scraper.get_items(
             "Fahrrad", "Berlin", "Fahrräder & Zubehör", until=last_hour

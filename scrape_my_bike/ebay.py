@@ -81,7 +81,8 @@ class EbayImageScraper:
         options_btn.click()
         continue_btn = WebDriverWait(self.driver, 10).until(
             lambda d: d.find_element(
-                By.XPATH, "/html/body/div[1]/div/div[2]/div/div[1]/button[1]"
+                By.XPATH,
+                "/html/body/div[1]/div/div[2]/div/div[2]/div/div/div[1]/button[1]",
             )
         )
         continue_btn.click()
